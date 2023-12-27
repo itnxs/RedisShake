@@ -47,6 +47,16 @@ cd RedisShake
 sh build.sh
 ```
 
+### Output
+```shell
+redis-cli -h 127.0.0.1 -p 6379 --rdb dump.rdb
+```
+
+### Import
+```shell
+./rdb-reader -f dump.rdb -h 127.0.0.1:6379
+```
+
 ### Usage
 
 Assume you have two Redis instances:
