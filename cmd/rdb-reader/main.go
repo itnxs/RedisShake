@@ -113,10 +113,10 @@ func main() {
         entries := function.RunFunction(e)
         log.Debugf("function after: %v", entries)
 
-        for _, entry := range entries {
-            entry.Parse()
-            theWriter.Write(entry)
-            status.AddWriteCount(entry.CmdName)
+        for _, en := range entries {
+            en.Parse()
+            theWriter.Write(en)
+            status.AddWriteCount(en.CmdName)
         }
     }
 
