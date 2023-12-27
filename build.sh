@@ -36,4 +36,5 @@ fi
 # build the current platform
 echo "try build for current platform"
 go build -v -trimpath -o "$BIN_DIR/redis-shake" "./cmd/redis-shake"
+go build -v -trimpath -o "$BIN_DIR/rdb-reader" "./cmd/rdb-reader"
 echo "build success"

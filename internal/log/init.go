@@ -1,48 +1,69 @@
 package log
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
+    "fmt"
+    "os"
+    "path/filepath"
 
-	"github.com/rs/zerolog"
+    "github.com/rs/zerolog"
 )
 
 var logger zerolog.Logger
 
 func Init(level string, file string, dir string) {
-	// log level
-	switch level {
-	case "debug":
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	case "info":
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	case "warn":
-		zerolog.SetGlobalLevel(zerolog.WarnLevel)
-	default:
-		panic(fmt.Sprintf("unknown log level: %s", level))
-	}
+    // log level
+    switch level {
+    case "debug":
+        zerolog.SetGlobalLevel(zerolog.DebugLevel)
+    case "info":
+        zerolog.SetGlobalLevel(zerolog.InfoLevel)
+    case "warn":
+        zerolog.SetGlobalLevel(zerolog.WarnLevel)
+    default:
+        panic(fmt.Sprintf("unknown log level: %s", level))
+    }
 
-	// dir
-	dir, err := filepath.Abs(dir)
-	if err != nil {
-		panic(fmt.Sprintf("failed to determine current directory: %v", err))
-	}
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		err = os.MkdirAll(dir, 0777)
-		if err != nil {
-			panic(fmt.Sprintf("mkdir failed. dir=[%s], error=[%v]", dir, err))
-		}
-	}
-	path := filepath.Join(dir, file)
+    // dir
+    dir, err := filepath.Abs(dir)
+    if err != nil {
+        panic(fmt.Sprintf("failed to determine current directory: %v", err))
+    }
+    if _, err := os.Stat(dir); os.IsNotExist(err) {
+        err = os.MkdirAll(dir, 0777)
+        if err != nil {
+            panic(fmt.Sprintf("mkdir failed. dir=[%s], error=[%v]", dir, err))
+        }
+    }
+    path := filepath.Join(dir, file)
 
-	// log file
-	consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006-01-02 15:04:05"}
-	fileWriter, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		panic(fmt.Sprintf("open log file failed. file=[%s], err=[%s]", path, err))
-	}
-	multi := zerolog.MultiLevelWriter(consoleWriter, fileWriter)
-	logger = zerolog.New(multi).With().Timestamp().Logger()
-	Infof("log_level: [%v], log_file: [%v]", level, path)
+    // log file
+    consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006-01-02 15:04:05"}
+    fileWriter, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
+    if err != nil {
+        panic(fmt.Sprintf("open log file failed. file=[%s], err=[%s]", path, err))
+    }
+    multi := zerolog.MultiLevelWriter(consoleWriter, fileWriter)
+    logger = zerolog.New(multi).With().Timestamp().Logger()
+    Infof("log_level: [%v], log_file: [%v]", level, path)
+}
+
+// Console log write
+func Console(level string) {
+    // log level
+    switch level {
+    case "debug":
+        zerolog.SetGlobalLevel(zerolog.DebugLevel)
+    case "info":
+        zerolog.SetGlobalLevel(zerolog.InfoLevel)
+    case "warn":
+        zerolog.SetGlobalLevel(zerolog.WarnLevel)
+    default:
+        panic(fmt.Sprintf("unknown log level: %s", level))
+    }
+
+    // log file
+    consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006-01-02 15:04:05"}
+    multi := zerolog.MultiLevelWriter(consoleWriter)
+    logger = zerolog.New(multi).With().Timestamp().Logger()
+    Infof("log_level: [%v]", level)
 }
