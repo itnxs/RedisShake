@@ -10,7 +10,6 @@ import (
     "RedisShake/internal/writer"
     "context"
     "flag"
-    "fmt"
     "os"
     "os/signal"
     "path/filepath"
@@ -62,7 +61,6 @@ func main() {
         }
 
         theReader = reader.NewRDBReader(opts)
-        fmt.Println(theReader)
     }
 
     // create writer
